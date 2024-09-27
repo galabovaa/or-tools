@@ -719,6 +719,7 @@ HighsSolver::ExtractSolutionAndRays(
         "highs_info.primal_solution_status==::kSolutionStatusFeasible, but no "
         "valid primal solution returned");
   }
+
   if (highs_solution.value_valid || highs_solution.dual_valid) {
     SolutionProto& solution =
         solution_and_claims.solutions.emplace_back(SolutionProto());
@@ -731,6 +732,50 @@ HighsSolver::ExtractSolutionAndRays(
       OR_ASSIGN_OR_RETURN3(const SolutionStatusProto primal_solution_status,
                            ToSolutionStatus(highs_info.primal_solution_status),
                            _ << "invalid highs_info.primal_solution_status");
+      
+      std::cerr << "primal_solution_status:: " << highs_info.primal_solution_status << std::endl << std::endl;
+      std::cerr << "dual_solution_status:: " << highs_info.dual_solution_status << std::endl << std::endl;
+      std::cout << highs_solution.col_value[0] << " " << highs_solution.col_value[1] << std::endl;
+      std::cout << highs_solution.col_dual[0] << " " << highs_solution.col_dual[1] << std::endl;
+
+      // const HighsLp& lp = highs_->getLp();
+
+      // std::cout << lp.num_col_ << std::endl;
+      // std::cout << lp.num_row_ << std::endl;
+      // std::cout << std::endl;
+      // std::cout << lp.a_matrix_.start_[0] << std::endl;
+      // std::cout << lp.a_matrix_.start_[1] << std::endl;
+      // std::cout << lp.a_matrix_.start_[2] << std::endl;
+      // std::cout << std::endl;
+      // std::cout << lp.a_matrix_.index_[0] << std::endl;
+      // std::cout << lp.a_matrix_.index_[1] << std::endl;
+      // std::cout << lp.a_matrix_.index_[2] << std::endl;
+      // std::cout << lp.a_matrix_.index_[3] << std::endl;
+      // std::cout << std::endl;
+      // std::cout << lp.a_matrix_.value_[0] << std::endl;
+      // std::cout << lp.a_matrix_.value_[1] << std::endl;
+      // std::cout << lp.a_matrix_.value_[2] << std::endl;
+      // std::cout << lp.a_matrix_.value_[3] << std::endl;
+      // std::cout << std::endl;
+      
+      // std::cout << lp.row_lower_[0] << std::endl;
+      // std::cout << lp.row_lower_[1] << std::endl;
+      // std::cout << lp.row_upper_[0] << std::endl;
+      // std::cout << lp.row_upper_[1] << std::endl;
+      // std::cout << std::endl;
+
+      // std::cout << lp.col_cost_[0] << std::endl;
+      // std::cout << lp.col_cost_[1] << std::endl;
+      // std::cout << std::endl;
+
+      // std::cout << lp.col_lower_[0] << std::endl;
+      // std::cout << lp.col_lower_[1] << std::endl;
+      // std::cout << lp.col_upper_[0] << std::endl;
+      // std::cout << lp.col_upper_[1] << std::endl;
+      // std::cout << std::endl;
+
+      const HighsOptions& options = highs_->getOptions();
+
       primal_solution.set_feasibility_status(primal_solution_status);
       solution_and_claims.solution_claims
           .highs_returned_primal_feasible_solution =
@@ -984,11 +1029,18 @@ absl::StatusOr<SolveResultProto> HighsSolver::Solve(
   }
 
   SolveResultProto result;
+
+  if (info.primal_solution_status == SolutionStatus::kSolutionStatusInfeasible) {
+
+  }
+
   ASSIGN_OR_RETURN(SolutionsAndClaims solutions_and_claims,
                    ExtractSolutionAndRays(model_parameters));
   for (SolutionProto& solution : solutions_and_claims.solutions) {
     *result.add_solutions() = std::move(solution);
   }
+
+
   ASSIGN_OR_RETURN(*result.mutable_termination(),
                    MakeTermination(highs_->getModelStatus(), info, is_integer,
                                    parameters.has_node_limit(),

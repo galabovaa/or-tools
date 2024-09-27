@@ -100,7 +100,7 @@ TEST_P(StatusTest, PrimalAndDualInfeasible) {
            "with a primal-dual infeasible LP relaxation.";
   }
   if (GetParam().solver_type == SolverType::kHighs) {
-    GTEST_SKIP() << "Ignoring this test as Highs 1.7+ returns error.";
+    // GTEST_SKIP() << "Ignoring this test as Highs 1.7+ returns error.";
   }
 
   Model model;
@@ -108,6 +108,10 @@ TEST_P(StatusTest, PrimalAndDualInfeasible) {
       model.AddVariable(0, kInf, GetParam().use_integer_variables, "x1");
   const Variable x2 =
       model.AddVariable(0, kInf, GetParam().use_integer_variables, "x2");
+  
+  bool isint = GetParam().use_integer_variables;
+  auto alg  =  GetParam().parameters.lp_algorithm;
+  auto params  =  GetParam().parameters;
 
   model.Maximize(2 * x1 - x2);
   model.AddLinearConstraint(x1 - x2 <= 1, "c1");

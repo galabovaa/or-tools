@@ -172,7 +172,8 @@ cc_library(
 
 git_repository(
     name = "highs",
-    branch = "v1.7.2",
+    # branch = "v1.7.2",
+    branch = "ortools",
     remote = "https://github.com/ERGO-Code/HiGHS.git",
 )
 
