@@ -219,6 +219,11 @@ absl::StatusOr<MPSolutionResponse> HighsSolveProto(
     highs.setOptionValue("output_flag", false);
   }
 
+  highs.setOptionValue("log_to_console", true);
+  highs.setOptionValue("output_flag", true);
+
+  highs.setOptionValue("solver", "pdlp");
+
   const absl::Time time_before = absl::Now();
   UserTimer user_timer;
   user_timer.Start();

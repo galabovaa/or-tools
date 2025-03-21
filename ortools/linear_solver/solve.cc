@@ -250,9 +250,10 @@ MPSolutionResponse LocalSolve(const MPModelRequest& request_proto) {
   // If the solver is a MIP, print the number of nodes.
   // TODO(user): add the number of nodes to the response, and move this code
   // to the main Run().
-  if (SolverTypeIsMip(request_proto.solver_type())) {
-    absl::PrintF("%-12s: %d\n", "Nodes", solver.nodes());
-  }
+
+  // if (SolverTypeIsMip(request_proto.solver_type())) {
+  //   absl::PrintF("%-12s: %d\n", "Nodes", solver.nodes());
+  // }
 
   // Fill and return the response proto.
   solver.FillSolutionResponseProto(&response);
