@@ -303,7 +303,7 @@ if(BUILD_HIGHS)
   FetchContent_Declare(
     highs
     GIT_REPOSITORY "https://github.com/ERGO-Code/HiGHS.git"
-    GIT_TAG        "latest"
+    GIT_TAG        "master"
     GIT_SHALLOW TRUE
     UPDATE_COMMAND git reset --hard
     # PATCH_COMMAND git apply --ignore-whitespace
